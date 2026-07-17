@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axiosClient from '../api/axiosClient';
 import Navbar from '../components/Navbar';
-import { Plus, X, UserPlus } from 'lucide-react';
+import { Plus, X, UserPlus, Upload, Trash2 } from 'lucide-react';
 
 export default function AdminDashboard() {
   const [scholarships, setScholarships] = useState([]);
@@ -18,6 +18,94 @@ export default function AdminDashboard() {
     name: '', department: '', rollNo: '', year: '',
     category: 'GENERAL', annualIncome: '', state: ''
   });
+
+  const [csvFile, setCsvFile] = useState(null);
+  const [uploadResult, setUploadResult] = useState(null);
+  const [uploading, setUploading] = useState(false);
+
+  const [mentorCsvFile, setMentorCsvFile] = useState(null);
+  const [mentorUploadResult, setMentorUploadResult] = useState(null);
+  const [mentorUploading, setMentorUploading] = useState(false);
+
+  const [scholarshipCsvFile, setScholarshipCsvFile] = useState(null);
+  const [scholarshipUploadResult, setScholarshipUploadResult] = useState(null);
+  const [scholarshipUploading, setScholarshipUploading] = useState(false);
+  const [attendanceCsvFile, setAttendanceCsvFile] = useState(null);
+const [attendanceUploadResult, setAttendanceUploadResult] = useState(null);
+const [attendanceUploading, setAttendanceUploading] = useState(false);
+
+const [marksCsvFile, setMarksCsvFile] = useState(null);
+const [marksUploadResult, setMarksUploadResult] = useState(null);
+const [marksUploading, setMarksUploading] = useState(false);
+
+const [feesCsvFile, setFeesCsvFile] = useState(null);
+const [feesUploadResult, setFeesUploadResult] = useState(null);
+const [feesUploading, setFeesUploading] = useState(false);
+
+const handleAttendanceCsvUpload = async (e) => {
+  e.preventDefault();
+  if (!attendanceCsvFile) return;
+  const uploadFormData = new FormData();
+  uploadFormData.append('file', attendanceCsvFile);
+  setAttendanceUploading(true);
+  setAttendanceUploadResult(null);
+  try {
+    const res = await axiosClient.post('/admin/students/bulk-upload-attendance', uploadFormData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    setAttendanceUploadResult(res.data);
+    setAttendanceCsvFile(null);
+  } catch (err) {
+    alert('Upload failed');
+    console.error(err);
+  } finally {
+    setAttendanceUploading(false);
+  }
+};
+
+const handleMarksCsvUpload = async (e) => {
+  e.preventDefault();
+  if (!marksCsvFile) return;
+  const uploadFormData = new FormData();
+  uploadFormData.append('file', marksCsvFile);
+  setMarksUploading(true);
+  setMarksUploadResult(null);
+  try {
+    const res = await axiosClient.post('/admin/students/bulk-upload-marks', uploadFormData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    setMarksUploadResult(res.data);
+    setMarksCsvFile(null);
+  } catch (err) {
+    alert('Upload failed');
+    console.error(err);
+  } finally {
+    setMarksUploading(false);
+  }
+};
+
+const handleFeesCsvUpload = async (e) => {
+  e.preventDefault();
+  if (!feesCsvFile) return;
+  const uploadFormData = new FormData();
+  uploadFormData.append('file', feesCsvFile);
+  setFeesUploading(true);
+  setFeesUploadResult(null);
+  try {
+    const res = await axiosClient.post('/admin/students/bulk-upload-fees', uploadFormData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    setFeesUploadResult(res.data);
+    setFeesCsvFile(null);
+  } catch (err) {
+    alert('Upload failed');
+    console.error(err);
+  } finally {
+    setFeesUploading(false);
+  }
+};
+
+
 
   const fetchScholarships = async () => {
     try {
@@ -56,6 +144,17 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleDeleteScholarship = async (id, name) => {
+    if (!window.confirm(`Delete scholarship "${name}"? This cannot be undone.`)) return;
+    try {
+      await axiosClient.delete(`/scholarships/${id}`);
+      fetchScholarships();
+    } catch (err) {
+      alert('Failed to delete scholarship');
+      console.error(err);
+    }
+  };
+
   const handleUserChange = (e) => {
     setUserFormData({ ...userFormData, [e.target.name]: e.target.value });
   };
@@ -77,8 +176,78 @@ export default function AdminDashboard() {
     }
   };
 
-  const inputClass = "bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500";
+  const handleCsvUpload = async (e) => {
+    e.preventDefault();
+    if (!csvFile) return;
 
+    const uploadFormData = new FormData();
+    uploadFormData.append('file', csvFile);
+
+    setUploading(true);
+    setUploadResult(null);
+    try {
+      const res = await axiosClient.post('/admin/students/bulk-upload', uploadFormData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      setUploadResult(res.data);
+      setCsvFile(null);
+    } catch (err) {
+      alert('Upload failed');
+      console.error(err);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleMentorCsvUpload = async (e) => {
+    e.preventDefault();
+    if (!mentorCsvFile) return;
+
+    const uploadFormData = new FormData();
+    uploadFormData.append('file', mentorCsvFile);
+
+    setMentorUploading(true);
+    setMentorUploadResult(null);
+    try {
+      const res = await axiosClient.post('/admin/students/bulk-upload-mentors', uploadFormData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      setMentorUploadResult(res.data);
+      setMentorCsvFile(null);
+    } catch (err) {
+      alert('Upload failed');
+      console.error(err);
+    } finally {
+      setMentorUploading(false);
+    }
+  };
+
+  const handleScholarshipCsvUpload = async (e) => {
+    e.preventDefault();
+    if (!scholarshipCsvFile) return;
+
+    const uploadFormData = new FormData();
+    uploadFormData.append('file', scholarshipCsvFile);
+
+    setScholarshipUploading(true);
+    setScholarshipUploadResult(null);
+    try {
+      const res = await axiosClient.post('/admin/students/bulk-upload-scholarships', uploadFormData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      setScholarshipUploadResult(res.data);
+      setScholarshipCsvFile(null);
+      fetchScholarships();
+    } catch (err) {
+      alert('Upload failed');
+      console.error(err);
+    } finally {
+      setScholarshipUploading(false);
+    }
+  };
+
+  const inputClass = "bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500";
+   
   return (
     <div className="min-h-screen bg-slate-950 relative overflow-hidden">
       <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-violet-600/20 rounded-full blur-3xl animate-float pointer-events-none" />
@@ -135,17 +304,27 @@ export default function AdminDashboard() {
                     <th className="px-4 py-3">Min Marks</th>
                     <th className="px-4 py-3">State</th>
                     <th className="px-4 py-3">Deadline</th>
+                    <th className="px-4 py-3">Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   {scholarships.map((s) => (
-                    <tr key={s.id} className="border-t border-white/10">
+                    <tr key={s.id} className="border-t border-white/10 hover:bg-white/5 transition">
                       <td className="px-4 py-3 font-medium text-white">{s.name}</td>
                       <td className="px-4 py-3 text-slate-300">{s.category}</td>
                       <td className="px-4 py-3 text-slate-300">₹{s.minIncome ?? 0} - ₹{s.maxIncome ?? '∞'}</td>
                       <td className="px-4 py-3 text-slate-300">{s.minMarks ?? '-'}%</td>
                       <td className="px-4 py-3 text-slate-300">{s.state ?? 'Any'}</td>
                       <td className="px-4 py-3 text-slate-300">{s.deadline}</td>
+                      <td className="px-4 py-3">
+                        <button
+                          onClick={() => handleDeleteScholarship(s.id, s.name)}
+                          className="flex items-center gap-1 text-red-400 hover:text-red-300 hover:bg-red-500/10 px-2 py-1 rounded-lg transition text-sm"
+                          title="Delete scholarship"
+                        >
+                          <Trash2 size={14} /> Delete
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -201,6 +380,217 @@ export default function AdminDashboard() {
             </form>
           )}
 
+          {/* Bulk Upload Students */}
+          <div className="flex justify-between items-center mb-6 mt-10">
+            <h2 className="text-xl font-bold text-white">Bulk Upload Students (CSV)</h2>
+          </div>
+
+          <div className="bg-white/5 backdrop-blur border border-white/10 p-6 rounded-xl mb-6">
+            <p className="text-slate-400 text-sm mb-4">
+              CSV columns: username,password,name,rollNo,department,year,category,annualIncome,state,mentorUsername (optional)
+            </p>
+            <form onSubmit={handleCsvUpload} className="flex items-center gap-3">
+              <input
+                type="file"
+                accept=".csv"
+                onChange={(e) => setCsvFile(e.target.files[0])}
+                className="text-slate-300 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-violet-600 file:text-white file:cursor-pointer"
+              />
+              <button
+                type="submit"
+                disabled={!csvFile || uploading}
+                className="flex items-center gap-1 bg-gradient-to-r from-violet-600 to-blue-600 text-white px-4 py-2 rounded-lg hover:opacity-90 transition disabled:opacity-50"
+              >
+                <Upload size={16} /> {uploading ? 'Uploading...' : 'Upload'}
+              </button>
+            </form>
+
+            {uploadResult && (
+              <div className="mt-4 p-4 bg-white/5 rounded-lg">
+                <p className="text-emerald-300 font-medium">{uploadResult.successCount} students created successfully</p>
+                {uploadResult.errors.length > 0 && (
+                  <div className="mt-2">
+                    <p className="text-amber-300 text-sm font-medium">{uploadResult.errors.length} issues:</p>
+                    <ul className="text-slate-400 text-xs mt-1 space-y-1">
+                      {uploadResult.errors.map((err, i) => (
+                        <li key={i}>• {err}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Bulk Upload Mentors */}
+          <div className="flex justify-between items-center mb-6 mt-10">
+            <h2 className="text-xl font-bold text-white">Bulk Upload Mentors (CSV)</h2>
+          </div>
+
+          <div className="bg-white/5 backdrop-blur border border-white/10 p-6 rounded-xl mb-6">
+            <p className="text-slate-400 text-sm mb-4">
+              CSV columns: username,password,name,department
+            </p>
+            <form onSubmit={handleMentorCsvUpload} className="flex items-center gap-3">
+              <input
+                type="file"
+                accept=".csv"
+                onChange={(e) => setMentorCsvFile(e.target.files[0])}
+                className="text-slate-300 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-violet-600 file:text-white file:cursor-pointer"
+              />
+              <button
+                type="submit"
+                disabled={!mentorCsvFile || mentorUploading}
+                className="flex items-center gap-1 bg-gradient-to-r from-violet-600 to-blue-600 text-white px-4 py-2 rounded-lg hover:opacity-90 transition disabled:opacity-50"
+              >
+                <Upload size={16} /> {mentorUploading ? 'Uploading...' : 'Upload'}
+              </button>
+            </form>
+
+            {mentorUploadResult && (
+              <div className="mt-4 p-4 bg-white/5 rounded-lg">
+                <p className="text-emerald-300 font-medium">{mentorUploadResult.successCount} mentors created successfully</p>
+                {mentorUploadResult.errors.length > 0 && (
+                  <div className="mt-2">
+                    <p className="text-amber-300 text-sm font-medium">{mentorUploadResult.errors.length} issues:</p>
+                    <ul className="text-slate-400 text-xs mt-1 space-y-1">
+                      {mentorUploadResult.errors.map((err, i) => (
+                        <li key={i}>• {err}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Bulk Upload Scholarships */}
+          <div className="flex justify-between items-center mb-6 mt-10">
+            <h2 className="text-xl font-bold text-white">Bulk Upload Scholarships (CSV)</h2>
+          </div>
+
+          <div className="bg-white/5 backdrop-blur border border-white/10 p-6 rounded-xl mb-6">
+            <p className="text-slate-400 text-sm mb-4">
+              CSV columns: name,minIncome,maxIncome,category,minMarks,state,deadline,description
+            </p>
+            <form onSubmit={handleScholarshipCsvUpload} className="flex items-center gap-3">
+              <input
+                type="file"
+                accept=".csv"
+                onChange={(e) => setScholarshipCsvFile(e.target.files[0])}
+                className="text-slate-300 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-violet-600 file:text-white file:cursor-pointer"
+              />
+              <button
+                type="submit"
+                disabled={!scholarshipCsvFile || scholarshipUploading}
+                className="flex items-center gap-1 bg-gradient-to-r from-violet-600 to-blue-600 text-white px-4 py-2 rounded-lg hover:opacity-90 transition disabled:opacity-50"
+              >
+                <Upload size={16} /> {scholarshipUploading ? 'Uploading...' : 'Upload'}
+              </button>
+            </form>
+
+            {scholarshipUploadResult && (
+              <div className="mt-4 p-4 bg-white/5 rounded-lg">
+                <p className="text-emerald-300 font-medium">{scholarshipUploadResult.successCount} scholarships created successfully</p>
+                {scholarshipUploadResult.errors.length > 0 && (
+                  <div className="mt-2">
+                    <p className="text-amber-300 text-sm font-medium">{scholarshipUploadResult.errors.length} issues:</p>
+                    <ul className="text-slate-400 text-xs mt-1 space-y-1">
+                      {scholarshipUploadResult.errors.map((err, i) => (
+                        <li key={i}>• {err}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+              {/* Bulk Upload Attendance */}
+<div className="flex justify-between items-center mb-6 mt-10">
+  <h2 className="text-xl font-bold text-white">Bulk Upload Attendance (CSV)</h2>
+</div>
+<div className="bg-white/5 backdrop-blur border border-white/10 p-6 rounded-xl mb-6">
+  <p className="text-slate-400 text-sm mb-4">CSV columns: rollNo,month,year,totalDays,presentDays</p>
+  <form onSubmit={handleAttendanceCsvUpload} className="flex items-center gap-3">
+    <input type="file" accept=".csv" onChange={(e) => setAttendanceCsvFile(e.target.files[0])}
+      className="text-slate-300 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-violet-600 file:text-white file:cursor-pointer" />
+    <button type="submit" disabled={!attendanceCsvFile || attendanceUploading}
+      className="flex items-center gap-1 bg-gradient-to-r from-violet-600 to-blue-600 text-white px-4 py-2 rounded-lg hover:opacity-90 transition disabled:opacity-50">
+      <Upload size={16} /> {attendanceUploading ? 'Uploading...' : 'Upload'}
+    </button>
+  </form>
+  {attendanceUploadResult && (
+    <div className="mt-4 p-4 bg-white/5 rounded-lg">
+      <p className="text-emerald-300 font-medium">{attendanceUploadResult.successCount} attendance records created</p>
+      {attendanceUploadResult.errors.length > 0 && (
+        <div className="mt-2">
+          <p className="text-amber-300 text-sm font-medium">{attendanceUploadResult.errors.length} issues:</p>
+          <ul className="text-slate-400 text-xs mt-1 space-y-1">
+            {attendanceUploadResult.errors.map((err, i) => <li key={i}>• {err}</li>)}
+          </ul>
+        </div>
+      )}
+    </div>
+  )}
+</div>
+
+{/* Bulk Upload Marks */}
+<div className="flex justify-between items-center mb-6 mt-10">
+  <h2 className="text-xl font-bold text-white">Bulk Upload Marks (CSV)</h2>
+</div>
+<div className="bg-white/5 backdrop-blur border border-white/10 p-6 rounded-xl mb-6">
+  <p className="text-slate-400 text-sm mb-4">CSV columns: rollNo,subject,assessmentType,score,maxScore,assessmentDate</p>
+  <form onSubmit={handleMarksCsvUpload} className="flex items-center gap-3">
+    <input type="file" accept=".csv" onChange={(e) => setMarksCsvFile(e.target.files[0])}
+      className="text-slate-300 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-violet-600 file:text-white file:cursor-pointer" />
+    <button type="submit" disabled={!marksCsvFile || marksUploading}
+      className="flex items-center gap-1 bg-gradient-to-r from-violet-600 to-blue-600 text-white px-4 py-2 rounded-lg hover:opacity-90 transition disabled:opacity-50">
+      <Upload size={16} /> {marksUploading ? 'Uploading...' : 'Upload'}
+    </button>
+  </form>
+  {marksUploadResult && (
+    <div className="mt-4 p-4 bg-white/5 rounded-lg">
+      <p className="text-emerald-300 font-medium">{marksUploadResult.successCount} marks records created</p>
+      {marksUploadResult.errors.length > 0 && (
+        <div className="mt-2">
+          <p className="text-amber-300 text-sm font-medium">{marksUploadResult.errors.length} issues:</p>
+          <ul className="text-slate-400 text-xs mt-1 space-y-1">
+            {marksUploadResult.errors.map((err, i) => <li key={i}>• {err}</li>)}
+          </ul>
+        </div>
+      )}
+    </div>
+  )}
+</div>
+
+{/* Bulk Upload Fees */}
+<div className="flex justify-between items-center mb-6 mt-10">
+  <h2 className="text-xl font-bold text-white">Bulk Upload Fee Status (CSV)</h2>
+</div>
+<div className="bg-white/5 backdrop-blur border border-white/10 p-6 rounded-xl mb-6">
+  <p className="text-slate-400 text-sm mb-4">CSV columns: rollNo,semester,amountDue,dueDate,paid (true/false)</p>
+  <form onSubmit={handleFeesCsvUpload} className="flex items-center gap-3">
+    <input type="file" accept=".csv" onChange={(e) => setFeesCsvFile(e.target.files[0])}
+      className="text-slate-300 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-violet-600 file:text-white file:cursor-pointer" />
+    <button type="submit" disabled={!feesCsvFile || feesUploading}
+      className="flex items-center gap-1 bg-gradient-to-r from-violet-600 to-blue-600 text-white px-4 py-2 rounded-lg hover:opacity-90 transition disabled:opacity-50">
+      <Upload size={16} /> {feesUploading ? 'Uploading...' : 'Upload'}
+    </button>
+  </form>
+  {feesUploadResult && (
+    <div className="mt-4 p-4 bg-white/5 rounded-lg">
+      <p className="text-emerald-300 font-medium">{feesUploadResult.successCount} fee records created</p>
+      {feesUploadResult.errors.length > 0 && (
+        <div className="mt-2">
+          <p className="text-amber-300 text-sm font-medium">{feesUploadResult.errors.length} issues:</p>
+          <ul className="text-slate-400 text-xs mt-1 space-y-1">
+            {feesUploadResult.errors.map((err, i) => <li key={i}>• {err}</li>)}
+          </ul>
+        </div>
+      )}
+    </div>
+  )}
+</div>
         </div>
       </div>
     </div>

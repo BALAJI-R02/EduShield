@@ -51,6 +51,13 @@ public class ScholarshipService {
                 .collect(Collectors.toList());
     }
 
+    public void deleteScholarship(Long id) {
+        // Delete related matches first to avoid FK constraint violation
+        List<ScholarshipMatch> matches = scholarshipMatchRepository.findByScholarshipId(id);
+        scholarshipMatchRepository.deleteAll(matches);
+        scholarshipRepository.deleteById(id);
+    }
+
     public List<ScholarshipMatchResponse> findAndSaveMatches(Long studentId) {
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new RuntimeException("Student not found with id: " + studentId));

@@ -10,4 +10,6 @@ import com.edushield.backend.entity.Student;
 public interface StudentRepository extends JpaRepository<Student, Long> {
     Optional<Student> findByUserId(Long userId);
     List<Student> findByMentorId(Long mentorId);
+    boolean existsByRollNo(String rollNo);
+    Optional<Student> findByRollNo(String rollNo);
 }

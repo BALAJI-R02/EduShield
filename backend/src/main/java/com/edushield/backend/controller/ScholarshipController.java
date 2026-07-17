@@ -31,4 +31,10 @@ public class ScholarshipController {
     public ResponseEntity<List<ScholarshipMatchResponse>> getMatches(@PathVariable Long studentId) {
         return ResponseEntity.ok(scholarshipService.findAndSaveMatches(studentId));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteScholarship(@PathVariable Long id) {
+        scholarshipService.deleteScholarship(id);
+        return ResponseEntity.noContent().build();
+    }
 }

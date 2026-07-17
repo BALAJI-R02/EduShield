@@ -8,4 +8,5 @@ import com.edushield.backend.entity.ScholarshipMatch;
 
 public interface ScholarshipMatchRepository extends JpaRepository<ScholarshipMatch, Long> {
     List<ScholarshipMatch> findByStudentId(Long studentId);
+    List<ScholarshipMatch> findByScholarshipId(Long scholarshipId);
 }
