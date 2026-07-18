@@ -50,9 +50,7 @@ const handleAttendanceCsvUpload = async (e) => {
   setAttendanceUploading(true);
   setAttendanceUploadResult(null);
   try {
-    const res = await axiosClient.post('/admin/students/bulk-upload-attendance', uploadFormData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    const res = await axiosClient.post('/admin/students/bulk-upload-attendance', uploadFormData);
     setAttendanceUploadResult(res.data);
     setAttendanceCsvFile(null);
   } catch (err) {
@@ -71,9 +69,7 @@ const handleMarksCsvUpload = async (e) => {
   setMarksUploading(true);
   setMarksUploadResult(null);
   try {
-    const res = await axiosClient.post('/admin/students/bulk-upload-marks', uploadFormData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    const res = await axiosClient.post('/admin/students/bulk-upload-marks', uploadFormData);
     setMarksUploadResult(res.data);
     setMarksCsvFile(null);
   } catch (err) {
@@ -92,9 +88,7 @@ const handleFeesCsvUpload = async (e) => {
   setFeesUploading(true);
   setFeesUploadResult(null);
   try {
-    const res = await axiosClient.post('/admin/students/bulk-upload-fees', uploadFormData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    const res = await axiosClient.post('/admin/students/bulk-upload-fees', uploadFormData);
     setFeesUploadResult(res.data);
     setFeesCsvFile(null);
   } catch (err) {
@@ -186,9 +180,7 @@ const handleFeesCsvUpload = async (e) => {
     setUploading(true);
     setUploadResult(null);
     try {
-      const res = await axiosClient.post('/admin/students/bulk-upload', uploadFormData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      const res = await axiosClient.post('/admin/students/bulk-upload', uploadFormData);
       setUploadResult(res.data);
       setCsvFile(null);
     } catch (err) {
@@ -209,9 +201,7 @@ const handleFeesCsvUpload = async (e) => {
     setMentorUploading(true);
     setMentorUploadResult(null);
     try {
-      const res = await axiosClient.post('/admin/students/bulk-upload-mentors', uploadFormData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      const res = await axiosClient.post('/admin/students/bulk-upload-mentors', uploadFormData);
       setMentorUploadResult(res.data);
       setMentorCsvFile(null);
     } catch (err) {
@@ -232,9 +222,7 @@ const handleFeesCsvUpload = async (e) => {
     setScholarshipUploading(true);
     setScholarshipUploadResult(null);
     try {
-      const res = await axiosClient.post('/admin/students/bulk-upload-scholarships', uploadFormData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      const res = await axiosClient.post('/admin/students/bulk-upload-scholarships', uploadFormData);
       setScholarshipUploadResult(res.data);
       setScholarshipCsvFile(null);
       fetchScholarships();
