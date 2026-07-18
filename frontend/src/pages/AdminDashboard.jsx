@@ -54,8 +54,10 @@ const handleAttendanceCsvUpload = async (e) => {
     setAttendanceUploadResult(res.data);
     setAttendanceCsvFile(null);
   } catch (err) {
-    alert('Upload failed');
-    console.error(err);
+    const status = err?.response?.status;
+    const msg = err?.response?.data || err?.message || 'Network error';
+    alert(`Attendance upload failed\nStatus: ${status}\n${JSON.stringify(msg)}`);
+    console.error('Attendance upload error:', err);
   } finally {
     setAttendanceUploading(false);
   }
@@ -73,8 +75,10 @@ const handleMarksCsvUpload = async (e) => {
     setMarksUploadResult(res.data);
     setMarksCsvFile(null);
   } catch (err) {
-    alert('Upload failed');
-    console.error(err);
+    const status = err?.response?.status;
+    const msg = err?.response?.data || err?.message || 'Network error';
+    alert(`Attendance upload failed\nStatus: ${status}\n${JSON.stringify(msg)}`);
+    console.error('Attendance upload error:', err);
   } finally {
     setMarksUploading(false);
   }
@@ -92,8 +96,10 @@ const handleFeesCsvUpload = async (e) => {
     setFeesUploadResult(res.data);
     setFeesCsvFile(null);
   } catch (err) {
-    alert('Upload failed');
-    console.error(err);
+    const status = err?.response?.status;
+    const msg = err?.response?.data || err?.message || 'Network error';
+    alert(`Attendance upload failed\nStatus: ${status}\n${JSON.stringify(msg)}`);
+    console.error('Attendance upload error:', err);
   } finally {
     setFeesUploading(false);
   }
@@ -184,8 +190,10 @@ const handleFeesCsvUpload = async (e) => {
       setUploadResult(res.data);
       setCsvFile(null);
     } catch (err) {
-      alert('Upload failed');
-      console.error(err);
+      const status = err?.response?.status;
+      const msg = err?.response?.data || err?.message || 'Network error';
+      alert(`Student upload failed\nStatus: ${status}\n${JSON.stringify(msg)}`);
+      console.error('Student upload error:', err);
     } finally {
       setUploading(false);
     }
@@ -205,8 +213,10 @@ const handleFeesCsvUpload = async (e) => {
       setMentorUploadResult(res.data);
       setMentorCsvFile(null);
     } catch (err) {
-      alert('Upload failed');
-      console.error(err);
+      const status = err?.response?.status;
+      const msg = err?.response?.data || err?.message || 'Network error';
+      alert(`Mentor upload failed\nStatus: ${status}\n${JSON.stringify(msg)}`);
+      console.error('Mentor upload error:', err);
     } finally {
       setMentorUploading(false);
     }
@@ -227,8 +237,10 @@ const handleFeesCsvUpload = async (e) => {
       setScholarshipCsvFile(null);
       fetchScholarships();
     } catch (err) {
-      alert('Upload failed');
-      console.error(err);
+      const status = err?.response?.status;
+      const msg = err?.response?.data || err?.message || 'Network error';
+      alert(`Scholarship upload failed\nStatus: ${status}\n${JSON.stringify(msg)}`);
+      console.error('Scholarship upload error:', err);
     } finally {
       setScholarshipUploading(false);
     }
