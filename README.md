@@ -63,10 +63,15 @@ Admins can bulk-upload via CSV instead of manual entry, one-by-one:
 ## 🏗️ Architecture
 
 ```
-┌─────────────┐        ┌──────────────────┐        ┌─────────────────┐
-│   React     │──HTTP──▶│   Spring Boot     │──JDBC──▶│   MySQL (Aiven)  │
-│  (Vercel)   │◀────────│   (Render/Docker) │◀────────│                  │
-└─────────────┘  JWT    └──────────────────┘         └─────────────────┘
+[ React Frontend ]
+        |
+        |  REST API (JWT Auth)
+        v
+[ Spring Boot Backend ]
+        |
+        |  JDBC
+        v
+[ MySQL Database (Aiven) ]
 ```
 
 - **Frontend** communicates with the backend exclusively via REST API, authenticated with a JWT stored client-side
