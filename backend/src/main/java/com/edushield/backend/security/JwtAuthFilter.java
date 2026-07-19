@@ -43,6 +43,18 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 // invalid token, leave username null, request continues unauthenticated
             }
         }
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+    System.out.println("Loaded authorities: " + userDetails.getAuthorities());
+    
+    if (jwtUtil.isTokenValid(jwt, username)) {
+        UsernamePasswordAuthenticationToken authToken =
+                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        SecurityContextHolder.getContext().setAuthentication(authToken);
+        System.out.println("Authentication SET for: " + request.getRequestURI());
+    }
+}
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
